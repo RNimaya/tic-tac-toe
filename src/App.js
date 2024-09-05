@@ -13,7 +13,6 @@ function Square({ value, onSquareClick }) {
 
 // The entire Tic-Tac-Toe board with 9 squares
 function Board({ xIsNext, squares, onPlay }) {
-  //xIsNext- turn X/O, squares- board's state, onPlay- function, when player makes a move
 
   // When a square clicked,It checks the winner, if the square is already occupied,
   // OR updates the board with either "X" or "O" depending on whose turn it is and calls onPlay to update the state.
@@ -35,6 +34,7 @@ function Board({ xIsNext, squares, onPlay }) {
   //Determine if there's a winner by checking the current state of the board
   const winner = calculateWinner(squares);
 
+  // Set the status message depending on whether there's a winner or whose turn is next
   let status;
   if (winner) {
     status = "Winner: " + winner;
@@ -45,6 +45,9 @@ function Board({ xIsNext, squares, onPlay }) {
   return (
     <>
       <div className="status">{status}</div>
+
+      
+      {/* Render the three rows of the board, each containing three squares */}
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -65,23 +68,27 @@ function Board({ xIsNext, squares, onPlay }) {
     </>
   );
 }
+
+//  Manage the overall state and logic of the game
 export default function Game() {
-  //const [xIsNext, setXIsNext] = useState(true);
+
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
+  // This funstion is called when a move is made
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
-    //setXIsNext(!xIsNext);
+    
   }
 
+  // Thisfunction allows the user to move to a specific point in the game's history
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
-    // setXIsNext(nextMove % 2 === 0);
+    
   }
   const moves = history.map((squares, move) => {
     let description;
@@ -90,7 +97,9 @@ export default function Game() {
     } else {
       description = "Go to game start";
     }
+
     return (
+      // Render a list item with a button to jump to the corresponding move
       <li>
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
@@ -109,6 +118,7 @@ export default function Game() {
   );
 }
 
+// This function checks the board to see if there is a winner
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
